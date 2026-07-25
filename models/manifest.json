@@ -12,7 +12,7 @@
     "id": "door-1",
     "name": "Дверь 1",
     "glb": "models/door-1.glb",
-    "usdz": "models/door-1.usdz",
+    "usdz": "",
     "poster": "",
     "width": 900,
     "height": 2100
@@ -21,7 +21,7 @@
     "id": "door-2",
     "name": "Дверь 2",
     "glb": "models/door-2.glb",
-    "usdz": "models/door-2.usdz",
+    "usdz": "",
     "poster": "",
     "width": 900,
     "height": 2100
