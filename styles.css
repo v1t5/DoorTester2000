@@ -61,6 +61,22 @@ model-viewer {
 .spec-name { font-size: 15px; font-weight: 600; }
 .spec-size { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
+.recenter-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 44px; height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+.recenter-btn:active { transform: scale(.94); }
+
 #ar-btn {
   position: absolute;
   bottom: 20px; left: 50%;
