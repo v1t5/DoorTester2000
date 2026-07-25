@@ -4,8 +4,10 @@
 // парная картинка (.jpg/.png/.webp) — превью для каталога.
 //
 // Необязательно: models/labels.json вида
-//   { "wooden_door_v3": { "name": "Дуб Классик", "width": 900, "height": 2100 } }
-// переопределяет название и номинальные размеры по id (= имя файла без расширения).
+//   { "wooden_door_v3": { "name": "Дуб Классик", "width": 900, "height": 2000 } }
+// переопределяет название и номинальные размеры ПОЛОТНА по id (= имя файла без расширения).
+// В приложении дверь показывается в размере проёма (полотно + запас ~10 см).
+// Для не-дверей (демо) добавь "opening": false — тогда запас не применяется.
 //
 // Запуск:  node gen-manifest.mjs
 
@@ -40,8 +42,9 @@ const doors = files
       glb: `models/${glb}`,
       usdz: files.includes(usdz) ? `models/${usdz}` : '',
       poster: poster ? `models/${poster}` : '',
-      width: ov.width || 900,
-      height: ov.height || 2100,
+      width: ov.width || 900,       // размер полотна, мм
+      height: ov.height || 2000,    // размер полотна, мм
+      opening: ov.opening !== false, // применять запас полотно→проём (false для не-дверей)
     };
   });
 

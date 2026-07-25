@@ -27,8 +27,13 @@ const SIZE_PRESETS = [
   { w: 600, h: 2000 },
   { w: 700, h: 2000 },
   { w: 800, h: 2000 },
-  { w: 900, h: 2100 },
+  { w: 900, h: 2000 },
 ];
+
+// Проём больше полотна: дверь 900×2000 ставится в проём ~1000×2100.
+// Номиналы (пресеты/манифест) — размеры полотна; двери показываем в размере проёма.
+// Для не-дверей (демо-астронавт, opening:false в манифесте) запас не применяется.
+const OPENING_ALLOWANCE = { w: 100, h: 100 }; // мм, прибавка полотно → проём
 
 // --- Состояние ---
 let current = null;         // выбранная дверь
@@ -70,8 +75,12 @@ function applyColor() {
 // Масштаб считаем по осям: у модели ось высоты/ширины/толщины определяется автоматически.
 function applySize() {
   if (!current || !nativeSize || !roles) return;
-  const w = Number(dimW.value) || current.width;
-  const h = Number(dimH.value) || current.height;
+  const leafW = Number(dimW.value) || current.width;   // размер полотна (ввод/пресет)
+  const leafH = Number(dimH.value) || current.height;
+  // двери показываем в размере проёма (полотно + запас); демо (opening:false) — как есть
+  const add = current.opening === false ? { w: 0, h: 0 } : OPENING_ALLOWANCE;
+  const w = leafW + add.w;
+  const h = leafH + add.h;
 
   const sWidth  = (w / 1000) / (nativeSize[roles.width]  || 1);
   const sHeight = (h / 1000) / (nativeSize[roles.height] || 1);
@@ -82,9 +91,11 @@ function applySize() {
   viewer.scale = `${sc.x} ${sc.y} ${sc.z}`;
   reframe();
 
-  specSize.textContent = `${w} × ${h} мм`;
+  specSize.textContent = current.opening === false
+    ? `${leafW} × ${leafH} мм`
+    : `полотно ${leafW}×${leafH} · проём ${w}×${h} мм`;
   sizePresetsEl.querySelectorAll('.size-preset').forEach((b) => {
-    b.classList.toggle('active', Number(b.dataset.w) === w && Number(b.dataset.h) === h);
+    b.classList.toggle('active', Number(b.dataset.w) === leafW && Number(b.dataset.h) === leafH);
   });
 }
 

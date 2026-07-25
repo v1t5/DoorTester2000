@@ -6,7 +6,8 @@
     "usdz": "models/Astronaut.usdz",
     "poster": "",
     "width": 1120,
-    "height": 2011
+    "height": 2011,
+    "opening": false
   },
   {
     "id": "door-1",
@@ -15,7 +16,8 @@
     "usdz": "",
     "poster": "",
     "width": 900,
-    "height": 2100
+    "height": 2000,
+    "opening": true
   },
   {
     "id": "door-2",
@@ -24,6 +26,7 @@
     "usdz": "",
     "poster": "",
     "width": 900,
-    "height": 2100
+    "height": 2000,
+    "opening": true
   }
 ]
