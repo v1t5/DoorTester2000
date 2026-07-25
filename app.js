@@ -161,20 +161,6 @@ SIZE_PRESETS.forEach((p) => {
 dimW.addEventListener('input', applySize);
 dimH.addEventListener('input', applySize);
 
-// --- Вернуть модель в кадр ---
-// Панорама камеры (два пальца) может «увезти» объект за пределы видимости.
-// Кнопка и двойной тап сбрасывают панораму и подгоняют дистанцию, сохраняя угол обзора.
-const recenterBtn = document.getElementById('recenter-btn');
-function recenter() {
-  const o = viewer.getCameraOrbit();                 // текущий угол/зум (радианы, метры)
-  if (viewer.updateFraming) viewer.updateFraming();  // масштаб мог поменяться — пересчёт кадра
-  viewer.cameraTarget = 'auto auto auto';            // цель камеры → центр модели (сброс панорамы)
-  viewer.cameraOrbit  = `${o.theta}rad ${o.phi}rad auto`; // тот же угол, дистанция → по кадру
-  viewer.fieldOfView  = 'auto';
-}
-recenterBtn.addEventListener('click', recenter);
-viewer.addEventListener('dblclick', recenter);       // двойной тап/клик по сцене — тоже в центр
-
 // --- Загрузка модели ---
 viewer.addEventListener('progress', (e) => {
   const p = e.detail.totalProgress;
