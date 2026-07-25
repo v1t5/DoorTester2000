@@ -10,6 +10,10 @@ const colorCustom = document.getElementById('color-custom');
 const sizePresetsEl = document.getElementById('size-presets');
 const dimW = document.getElementById('dim-w');
 const dimH = document.getElementById('dim-h');
+const noGapEl = document.getElementById('no-gap');
+const modelUrl = document.getElementById('model-url');
+const loadUrlBtn = document.getElementById('load-url');
+const modelFile = document.getElementById('model-file');
 
 // Палитра «дверных» цветов. null = исходный цвет модели.
 const COLORS = [
@@ -41,6 +45,7 @@ let currentColor = null;    // hex или null
 let originalFactors = null; // исходные baseColorFactor материалов
 let nativeSize = null;      // локальные габариты модели (метры), измеряются при загрузке
 let roles = null;           // какая ось = ширина/высота/толщина: {thick,width,height}
+let noGap = false;          // «без зазора»: показывать в размер полотна (скрытые двери)
 
 // sRGB (0..255) -> linear (0..1)
 function srgbToLinear(c) {
@@ -77,8 +82,10 @@ function applySize() {
   if (!current || !nativeSize || !roles) return;
   const leafW = Number(dimW.value) || current.width;   // размер полотна (ввод/пресет)
   const leafH = Number(dimH.value) || current.height;
-  // двери показываем в размере проёма (полотно + запас); демо (opening:false) — как есть
-  const add = current.opening === false ? { w: 0, h: 0 } : OPENING_ALLOWANCE;
+  // двери показываем в размере проёма (полотно + запас); демо (opening:false)
+  // и «без зазора» (скрытая дверь) — как есть, ровно в полотно
+  const gapOff = noGap || current.opening === false;
+  const add = gapOff ? { w: 0, h: 0 } : OPENING_ALLOWANCE;
   const w = leafW + add.w;
   const h = leafH + add.h;
 
@@ -91,7 +98,7 @@ function applySize() {
   viewer.scale = `${sc.x} ${sc.y} ${sc.z}`;
   reframe();
 
-  specSize.textContent = current.opening === false
+  specSize.textContent = gapOff
     ? `${leafW} × ${leafH} мм`
     : `полотно ${leafW}×${leafH} · проём ${w}×${h} мм`;
   sizePresetsEl.querySelectorAll('.size-preset').forEach((b) => {
@@ -125,19 +132,56 @@ function selectDoor(door, chipEl) {
   swatchesEl.querySelectorAll('.swatch').forEach((s, i) => s.classList.toggle('active', i === 0));
 }
 
+function makeChip(door) {
+  const chip = document.createElement('button');
+  chip.className = 'door-chip';
+  chip.innerHTML = door.poster
+    ? `<img src="${door.poster}" alt="${door.name}" loading="lazy"><span>${door.name}</span>`
+    : `<span class="no-poster">◫</span><span>${door.name}</span>`;
+  chip.addEventListener('click', () => selectDoor(door, chip));
+  return chip;
+}
+
 function buildCatalog(doors) {
   catalog.innerHTML = '';
   doors.forEach((door, i) => {
-    const chip = document.createElement('button');
-    chip.className = 'door-chip';
-    chip.innerHTML = door.poster
-      ? `<img src="${door.poster}" alt="${door.name}" loading="lazy"><span>${door.name}</span>`
-      : `<span class="no-poster">◫</span><span>${door.name}</span>`;
-    chip.addEventListener('click', () => selectDoor(door, chip));
+    const chip = makeChip(door);
     catalog.appendChild(chip);
     if (i === 0) selectDoor(door, chip);
   });
 }
+
+// Подключение своей модели на лету (без манифеста): по ссылке .glb или локальным файлом.
+// usdz не задаём — на iOS model-viewer сам сгенерирует его из загруженной модели.
+let customN = 0;
+function loadCustomModel(src, name) {
+  const door = {
+    id: `custom-${++customN}`,
+    name: name || 'Своя модель',
+    glb: src, usdz: '', poster: '',
+    width: 900, height: 2000, opening: true,
+  };
+  const chip = makeChip(door);
+  catalog.prepend(chip);
+  chip.scrollIntoView({ inline: 'start', block: 'nearest' });
+  selectDoor(door, chip);
+}
+
+loadUrlBtn.addEventListener('click', () => {
+  const url = modelUrl.value.trim();
+  if (!url) return;
+  const base = url.split('/').pop().split('?')[0];
+  let name = base;
+  try { name = decodeURIComponent(base); } catch { /* кривой %-escape — оставим как есть */ }
+  loadCustomModel(url, name || 'Своя модель');
+});
+modelUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') loadUrlBtn.click(); });
+modelFile.addEventListener('change', () => {
+  const f = modelFile.files[0];
+  if (!f) return;
+  loadCustomModel(URL.createObjectURL(f), f.name);
+  modelFile.value = '';   // чтобы повторный выбор того же файла срабатывал
+});
 
 // --- Свотчи цвета ---
 COLORS.forEach((c, i) => {
@@ -171,6 +215,7 @@ SIZE_PRESETS.forEach((p) => {
 });
 dimW.addEventListener('input', applySize);
 dimH.addEventListener('input', applySize);
+noGapEl.addEventListener('change', () => { noGap = noGapEl.checked; applySize(); });
 
 // --- Загрузка модели ---
 viewer.addEventListener('progress', (e) => {
@@ -196,6 +241,11 @@ viewer.addEventListener('load', async () => {
   applyColor();
   applySize();
   arSupport.textContent = viewer.canActivateAR ? '' : 'AR доступен в Safari на iPhone/iPad';
+});
+viewer.addEventListener('error', () => {
+  // чаще всего — битая ссылка или запрет CORS у чужого хоста
+  specName.textContent = 'Не удалось загрузить модель';
+  specSize.textContent = 'проверь ссылку и доступ (CORS)';
 });
 
 // --- Динамическая загрузка каталога из manifest.json ---

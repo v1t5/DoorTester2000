@@ -170,6 +170,39 @@ model-viewer {
   font-size: 14px;
 }
 
+.chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.chk input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+.url-input {
+  flex: 1 1 160px;
+  min-width: 120px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+}
+.btn-small, .file-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-small { border-color: var(--accent); color: var(--accent); }
+.btn-small:active, .file-btn:active { transform: scale(.97); }
+
 .catalog {
   display: flex;
   gap: 12px;

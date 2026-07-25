@@ -59,6 +59,17 @@
       <div class="size-presets" id="size-presets"></div>
       <label class="dim">Ш <input type="number" id="dim-w" min="400" max="1200" step="10"> мм</label>
       <label class="dim">В <input type="number" id="dim-h" min="1600" max="2400" step="10"> мм</label>
+      <label class="chk" title="Скрытая дверь: показывать в размер полотна, без зазора проёма ±10 см">
+        <input type="checkbox" id="no-gap"> без зазора
+      </label>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Модель</span>
+      <input type="url" id="model-url" class="url-input" placeholder="ссылка на .glb…" inputmode="url">
+      <button id="load-url" class="btn-small" type="button">Загрузить</button>
+      <label class="file-btn" title="Загрузить .glb с устройства">
+        файл<input type="file" id="model-file" accept=".glb,.gltf,model/gltf-binary" hidden>
+      </label>
     </div>
   </section>
 
