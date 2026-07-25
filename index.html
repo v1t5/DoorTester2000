@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Примерка дверей в AR</title>
+
+  <!-- model-viewer — бесплатная библиотека Google для 3D + AR (AR Quick Look на iOS) -->
+  <script type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <span class="app-title">Примерка дверей</span>
+    <span class="app-sub" id="ar-support"></span>
+  </header>
+
+  <main class="stage">
+    <model-viewer
+      id="viewer"
+      alt="Модель двери"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      ar-scale="fixed"
+      ar-placement="floor"
+      camera-controls
+      touch-action="pan-y"
+      shadow-intensity="1"
+      exposure="1"
+      environment-image="neutral"
+      loading="eager">
+      <button id="ar-btn" slot="ar-button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>
+        </svg>
+        Примерить в AR
+      </button>
+      <div class="progress" slot="progress-bar"><div class="progress-fill"></div></div>
+    </model-viewer>
+
+    <div class="spec-card" id="spec-card">
+      <div class="spec-name" id="spec-name">—</div>
+      <div class="spec-size" id="spec-size"></div>
+    </div>
+  </main>
+
+  <section class="controls">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Цвет</span>
+      <div class="swatches" id="swatches"></div>
+      <label class="color-custom" title="Свой цвет">
+        <input type="color" id="color-custom" value="#7a4a24">
+      </label>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Размер</span>
+      <div class="size-presets" id="size-presets"></div>
+      <label class="dim">Ш <input type="number" id="dim-w" min="400" max="1200" step="10"> мм</label>
+      <label class="dim">В <input type="number" id="dim-h" min="1600" max="2400" step="10"> мм</label>
+    </div>
+  </section>
+
+  <nav class="catalog" id="catalog"></nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
