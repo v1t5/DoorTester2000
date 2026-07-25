@@ -1,9 +1,27 @@
 [
   {
-    "id": "wooden_door_v3",
-    "name": "Wooden door",
-    "glb": "models/wooden_door_v3.glb",
-    "usdz": "",
+    "id": "Astronaut",
+    "name": "Астронавт 🧑‍🚀 (демо)",
+    "glb": "models/Astronaut.glb",
+    "usdz": "models/Astronaut.usdz",
+    "poster": "",
+    "width": 1120,
+    "height": 2011
+  },
+  {
+    "id": "door-1",
+    "name": "Дверь 1",
+    "glb": "models/door-1.glb",
+    "usdz": "models/door-1.usdz",
+    "poster": "",
+    "width": 900,
+    "height": 2100
+  },
+  {
+    "id": "door-2",
+    "name": "Дверь 2",
+    "glb": "models/door-2.glb",
+    "usdz": "models/door-2.usdz",
     "poster": "",
     "width": 900,
     "height": 2100
